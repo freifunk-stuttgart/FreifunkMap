@@ -34,17 +34,18 @@
 	<body>
 		<div id="tabs">
 			<ul>
-				<li><a href="#map">Map</a></li>
+				<li><a href="#mapView">Map</a></li>
 				<li><a href="nodes.html">Node List</a></li>
 			</ul>
 			
-			<div id="map"></div>
+			<div id="mapView"></div>
 		</div>
 		
 	</body>
 </html>
 
 <script>
+
 $(document).ready(function(){
 	
 	$( "#tabs"  ).tabs({ heightStyle: "content" });
@@ -59,7 +60,9 @@ $(document).ready(function(){
 		}
 	});
 	
-	var map = L.map('map').setView([48.7986, 9.2048], 11);
+	var map = L.map('mapView').setView([48.7986, 9.2048], 11);
+	
+	L.control.scale().addTo(map);
 	
 	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -92,5 +95,31 @@ $(document).ready(function(){
 	}
 	
 	map.addLayer(markers);
+	
+	
+	// Managed Click for Location Info (get Koordinaten für neue Freifunk Nodes)
+	var logo= L.control({
+		    position : 'topleft'
+		});
+	logo.onAdd = function(map) {
+	    this._div = L.DomUtil.create('div', 'myControl');
+	    var img_log = '<div id="locationInfo"><img src=\"images/locationbar.png\"></img></div>';
+	
+	    this._div.innerHTML = img_log;
+	    return this._div;
+	
+	};
+	logo.addTo(map);
+
+	$("#locationInfo").on("click", function() {
+		map.addOneTimeEventListener("click", function (e) {
+			function clickhandler(e) {
+		      prompt("Breitengrad , Längengrad", e.latlng.lat + "," + e.latlng.lng);
+		      map.off("click", clickhandler);
+		   };
+		   
+		    var clickevent = map.on('click', clickhandler);
+		});
+	});	
 });
 </script>
