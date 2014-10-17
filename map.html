@@ -1,0 +1,96 @@
+<!-- 
+/*
+ * @author     Flip
+ * @package    ffMap
+ * @version    1.0
+ * @licenses	CC-BY-SA Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz. https://creativecommons.org/licenses/by-sa/4.0/
+ */ 
+-->
+<html lang="de">
+	
+	<head>
+		<meta charset="utf-8">
+		<title> Freifunk Map</title>
+		
+		<link rel="stylesheet" href="style.css">
+		
+		<!-- jQuerry -->
+		<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+		<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	
+		<!-- jQuerry UI -->
+		<link rel="stylesheet" href="jquery-ui-1.11.2.custom/jquery-ui.min.css">
+		<script src="jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>
+
+		<!-- jleaflet -->
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+		<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+		
+		<link rel="stylesheet" href="Leaflet.markercluster/dist/MarkerCluster.css" />
+		<link rel="stylesheet" href="Leaflet.markercluster/dist/MarkerCluster.Default.css" />
+		<script src="Leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+	</head>
+	
+	<body>
+		<div id="tabs">
+			<ul>
+				<li><a href="#map">Map</a></li>
+				<li><a href="nodes.html">Node List</a></li>
+			</ul>
+			
+			<div id="map"></div>
+		</div>
+		
+	</body>
+</html>
+
+<script>
+$(document).ready(function(){
+	
+	$( "#tabs"  ).tabs({ heightStyle: "content" });
+	
+	$( "#tabs" ).tabs(
+	{
+		beforeLoad: function( event, ui ) 
+		{
+			ui.jqXHR.error(function() {
+				ui.panel.html("Couldn't load this tab. We'll try to fix this as soon as possible. ");
+			});
+		}
+	});
+	
+	var map = L.map('map').setView([48.7986, 9.2048], 11);
+	
+	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+	}).addTo(map);
+	
+	
+	var markers = new L.MarkerClusterGroup();
+	var nodesList = [];
+
+	try 
+	{ 
+		$.getJSON("./alfred-json-158.json",
+		function(data) 
+		{
+			$.each( data, function( key, val ) 
+			{	
+				if(val.location != null)
+				{
+					var marker1 = L.marker([val.location.latitude, val.location.longitude]);
+					marker1.bindPopup("<b>" + val.hostname + "</b><br>");
+					markers.addLayer(marker1);
+					nodesList.push(val);
+				}
+			});
+		});
+	} 
+	catch (err) 
+	{
+	    console.log(err);
+	}
+	
+	map.addLayer(markers);
+});
+</script>
