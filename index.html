@@ -108,7 +108,7 @@ $(document).ready(function(){
 
 	try 
 	{ 
-		$.getJSON("./alfred-json-158.json",
+		$.getJSON("./json/alfred-json-map.json",
 		function(data) 
 		{
 			$.each( data, function( key, val ) 
@@ -127,7 +127,7 @@ $(document).ready(function(){
 							"id": 		val['node_id'],
 					        "Node":    	val['hostname'],
 					        "Mac": 		val['network']['mac'],
-					        "Clients":  "?",//val['network']['addresses'].length,
+					        "Clients":  val['clients']['wifi'],
 					        "Model": 	val['hardware']['model'],
 					        "location": val['location'] == undefined ? 'no' : 'yes',
 					        "update":  	val['software']['autoupdater']['branch'] + "  (" + val['software']['autoupdater']['enabled'] + ")",
@@ -137,7 +137,7 @@ $(document).ready(function(){
 					    
 					    nodescount++;
 					    val['location'] == undefined ? null : nodesloc++;
-					    nodeswifi += 0;//val['network']['addresses'].length;
+					    nodeswifi += val['clients']['wifi'];
 					    
 					    $("#nodescount").html("Nodes total: " + nodescount);
 					    $("#nodesloc").html("Nodes with location: " + nodesloc);
