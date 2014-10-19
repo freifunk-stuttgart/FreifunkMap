@@ -29,22 +29,53 @@
 		<link rel="stylesheet" href="Leaflet.markercluster/dist/MarkerCluster.css" />
 		<link rel="stylesheet" href="Leaflet.markercluster/dist/MarkerCluster.Default.css" />
 		<script src="Leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+		
+		<!-- DataTables -->
+		<link rel="stylesheet" type="text/css" href="DataTables/media/css/jquery.dataTables.min.css">
+		<script type="text/javascript" charset="utf8" src="DataTables/media/js/jquery.dataTables.min.js"></script>
+		
 	</head>
 	
 	<body>
 		<div id="tabs">
 			<ul>
 				<li><a href="#mapView">Map</a></li>
-				<li><a href="nodes.html">Node List</a></li>
+				<li><a href="#nodeList">Node List</a></li>
 			</ul>
 			
-			<div id="mapView"></div>
+			<div id="mapView"> </div>
+			<div id="nodeList">
+				<p id="nodescount"> </p>
+				<p id="nodesloc"> </p>
+				<p id="nodeswifi"> </p>
+				
+				<table id="nodes" class="display" width="100%" cellspacing="0">
+					<thead>
+						<th class="hidden">Id</th><th>Node</th><th>Mac</th><th>Clients</th><th>Model</th><th>location</th><th>update</th><th>gluon</th><th>release</th>
+					</thead>
+				</table>
+			</div>
 		</div>
-		
 	</body>
 </html>
 
 <script>
+function getAbsolutePath() {
+    var loc = window.location;
+    var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
+    return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+}
+
+	//get URL parameter (php $_GET Äquivalent)
+function getParam(variable){ 
+     var query = window.location.search.substring(1);  
+     var vars = query.split("&"); 
+      for (var i=0;i<vars.length;i++) {   
+            var pair = vars[i].split("=");  
+            if(pair[0] == variable){return pair[1];}
+       }       
+       return(false);
+}
 
 $(document).ready(function(){
 	
@@ -55,7 +86,7 @@ $(document).ready(function(){
 		beforeLoad: function( event, ui ) 
 		{
 			ui.jqXHR.error(function() {
-				ui.panel.html("Couldn't load this tab. We'll try to fix this as soon as possible. ");
+				ui.panel.html("Couldn't load this tab. We'll try to fix this as soon as possible.");
 			});
 		}
 	});
@@ -71,6 +102,9 @@ $(document).ready(function(){
 	
 	var markers = new L.MarkerClusterGroup();
 	var nodesList = [];
+	var nodescount = 0;
+	var nodesloc = 0;
+	var nodeswifi = 0;
 
 	try 
 	{ 
@@ -83,9 +117,32 @@ $(document).ready(function(){
 				{
 					var marker1 = L.marker([val.location.latitude, val.location.longitude]);
 					marker1.bindPopup("<b>" + val.hostname + "</b><br>");
+					marker1.on('mouseover', marker1.openPopup.bind(marker1));
+					
 					markers.addLayer(marker1);
 					nodesList.push(val);
-				}
+					
+					//Add node to  Node-List
+					$( "#nodes" ).DataTable().row.add( {
+							"id": 		val['node_id'],
+					        "Node":    	val['hostname'],
+					        "Mac": 		val['network']['mac'],
+					        "Clients":  "?",//val['network']['addresses'].length,
+					        "Model": 	val['hardware']['model'],
+					        "location": val['location'] == undefined ? 'no' : 'yes',
+					        "update":  	val['software']['autoupdater']['branch'] + "  (" + val['software']['autoupdater']['enabled'] + ")",
+					        "gluon": 	val['software']['firmware']['base'],
+					        "release": 	val['software']['firmware']['release'],
+					    } ).draw();
+					    
+					    nodescount++;
+					    val['location'] == undefined ? null : nodesloc++;
+					    nodeswifi += 0;//val['network']['addresses'].length;
+					    
+					    $("#nodescount").html("Nodes total: " + nodescount);
+					    $("#nodesloc").html("Nodes with location: " + nodesloc);
+					    $("#nodeswifi").html("Wifi-Clients: " + nodeswifi);
+					}
 			});
 		});
 	} 
@@ -120,6 +177,29 @@ $(document).ready(function(){
 		   
 		    var clickevent = map.on('click', clickhandler);
 		});
-	});	
+	});
+	
+	//init NodeList
+	$('#nodes').DataTable({
+		paging: false,
+		columns: [
+        	{ data: "id", visible: false, },
+        	{ data: "Node" },
+            { data: "Mac" },
+            { data: "Clients" },
+            { data: "Model" },
+            { data: "location" },
+            { data: "update" },
+            { data: "gluon" },
+            { data: "release" }
+        ]
+	});
+	
+	//call this for specific tab
+	var tabIndex = getParam('tab');
+	if(tabIndex !== false) {
+		$( "#tabs" ).tabs({ active: tabIndex });
+	}
+	
 });
 </script>
