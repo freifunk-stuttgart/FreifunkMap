@@ -101,7 +101,7 @@ $(document).ready(function(){
 	
 	
 	var markers = new L.MarkerClusterGroup();
-	var nodesList = [];
+	//var nodesList = [];
 	var nodescount = 0;
 	var nodesloc = 0;
 	var nodeswifi = 0;
@@ -113,37 +113,37 @@ $(document).ready(function(){
 		{
 			$.each( data, function( key, val ) 
 			{	
-				if(val.location != null)
+				if(val.location != undefined)
 				{
 					var marker1 = L.marker([val.location.latitude, val.location.longitude]);
 					marker1.bindPopup("<b>" + val.hostname + "</b><br>");
 					marker1.on('mouseover', marker1.openPopup.bind(marker1));
 					
 					markers.addLayer(marker1);
-					nodesList.push(val);
-					
-					//Add node to  Node-List
-					$( "#nodes" ).DataTable().row.add( {
-							"id": 		val['node_id'],
-					        "Node":    	val['hostname'],
-					        "Mac": 		val['network']['mac'],
-					        "Clients":  val['clients']['wifi'],
-					        "Model": 	val['hardware']['model'],
-					        "location": val['location'] == undefined ? 'no' : 'yes',
-					        "update":  	val['software']['autoupdater']['branch'] + "  (" + val['software']['autoupdater']['enabled'] + ")",
-					        "gluon": 	val['software']['firmware']['base'],
-					        "release": 	val['software']['firmware']['release'],
-					    } ).draw();
-					    
-					    nodescount++;
-					    val['location'] == undefined ? null : nodesloc++;
-					    nodeswifi += val['clients']['wifi'];
-					    
-					    $("#nodescount").html("Nodes total: " + nodescount);
-					    $("#nodesloc").html("Nodes with location: " + nodesloc);
-					    $("#nodeswifi").html("Wifi-Clients: " + nodeswifi);
-					}
+					//nodesList.push(val);	
+				}
+				
+				//Add node to  Node-List
+				$( "#nodes" ).DataTable().row.add( {
+					"id": 		val['node_id'],
+			        "Node":    	val['hostname'],
+			        "Mac": 		val['network']['mac'],
+			        "Clients":  val['clients']['wifi'],
+			        "Model": 	val['hardware']['model'],
+			        "location": val['location'] == undefined ? 'no' : 'yes',
+			        "update":  	val['software']['autoupdater']['branch'] + "  (" + val['software']['autoupdater']['enabled'] + ")",
+			        "gluon": 	val['software']['firmware']['base'],
+			        "release": 	val['software']['firmware']['release'],
+			    } ).draw();
+			    
+			    nodescount++;
+			    val['location'] == undefined ? null : nodesloc++;
+			    nodeswifi += val['clients']['wifi'];
 			});
+			
+			$("#nodescount").html("Nodes total: " + nodescount);
+		    $("#nodesloc").html("Nodes with location: " + nodesloc);
+		    $("#nodeswifi").html("Wifi-Clients: " + nodeswifi);
 		});
 	} 
 	catch (err) 
