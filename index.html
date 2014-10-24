@@ -27,7 +27,6 @@
 		<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 		
 		<link rel="stylesheet" href="Leaflet.markercluster/dist/MarkerCluster.css" />
-		<link rel="stylesheet" href="Leaflet.markercluster/dist/MarkerCluster.Default.css" />
 		<script src="Leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
 		
 		<!-- DataTables -->
@@ -41,9 +40,15 @@
 			<ul>
 				<li><a href="#mapView">Map</a></li>
 				<li><a href="#nodeList">Node List</a></li>
+				<li id="tabInfo"></li>
 			</ul>
 			
-			<div id="mapView"> </div>
+			<div id="mapView"> 
+				<nav class='menu-ui'>
+				  <a href='#' id='online' class='active'>Online Nodes</a>
+				  <a href='#' id='offline'>Offline Nodes</a>
+				</nav>
+			</div>
 			<div id="nodeList">
 				<p id="nodescount"> </p>
 				<p id="nodesloc"> </p>
@@ -51,7 +56,7 @@
 				
 				<table id="nodes" class="display" width="100%" cellspacing="0">
 					<thead>
-						<th class="hidden">Id</th><th>Node</th><th>Mac</th><th>Clients</th><th>Model</th><th>location</th><th>update</th><th>gluon</th><th>release</th>
+						<th class="hidden">Id</th><th> </th><th>Node</th><th>Mac</th><th>Clients</th><th>Model</th><th>location</th><th>update</th><th>gluon</th><th>release</th>
 					</thead>
 				</table>
 			</div>
@@ -91,18 +96,67 @@ $(document).ready(function(){
 		}
 	});
 	
-	var map = L.map('mapView').setView([48.7986, 9.2048], 11);
-	
+	var markers = new L.MarkerClusterGroup({
+	    iconCreateFunction: function(cluster) {
+	    	var childCount = cluster.getChildCount();
+	        var c = ' onlinemarker-cluster-';
+			if (childCount < 2) {
+				c += 'small';
+			} else if (childCount < 20) {
+				c += 'medium';
+			} else {
+				c += 'large';
+			}
+			return new L.DivIcon({ html: '<div><span>' + childCount + '</span></div>', className: 'marker-cluster' + c, iconSize: new L.Point(40, 40) });
+	    }
+	});
+
+	var markersOffline = new L.MarkerClusterGroup({
+	    iconCreateFunction: function(cluster) {
+	    	var childCount = cluster.getChildCount();
+	        return new L.DivIcon({ html: '<div><span>' + childCount + '</span></div>', className: 'marker-cluster offlinemarker-cluster', iconSize: new L.Point(40, 40) });
+	    }
+	});
+
+	var mapboxtile = L.tileLayer('http://{s}.tiles.mapbox.com/v3/flip.k1179j89/{z}/{x}/{y}.png', {id: 'MapID', attribution: '&copy <a href="https://www.mapbox.com/">Map data</a> &copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'});
+    //var osmtile = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {id: 'MapID', attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'});
+
+	//init map
+	var map = L.map('mapView', {
+	    center: [48.7986, 9.2048],
+	    zoom: 11,
+	    layers: [mapboxtile]
+	});
+	map.addLayer(markers);
+	//add  scale to map
 	L.control.scale().addTo(map);
 	
-	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-	}).addTo(map);
+	// show / hide layers
+	map.getContainer().querySelector('#online').onclick = function() {
+	    if (this.className === 'active') {
+	        map.removeLayer(markers);
+	        this.className = '';
+	    } else {
+	        map.addLayer(markers);
+	        this.className = 'active';
+	    }
+	    return false;
+	};
 	
-	
-	var markers = new L.MarkerClusterGroup();
-	//var nodesList = [];
+	map.getContainer().querySelector('#offline').onclick = function() {
+	    if (this.className === 'active') {
+	        map.removeLayer(markersOffline);
+	        this.className = '';
+	    } else {
+	        map.addLayer(markersOffline);
+	        this.className = 'active';
+	    }
+	    return false;
+	};
+
+
 	var nodescount = 0;
+	var nodesonlinecount = 0;
 	var nodesloc = 0;
 	var nodeswifi = 0;
 
@@ -115,19 +169,35 @@ $(document).ready(function(){
 			{	
 				if(val.location != undefined)
 				{
-					var marker1 = L.marker([val.location.latitude, val.location.longitude]);
+					var ffMarkerStyle = L.divIcon({className: 'marker-cluster onlinemarker-cluster-small leaflet-zoom-animated leaflet-clickable ffMarkerStyle', iconSize: [40, 40], html: '<div></div>'});
+
+					if(val['status'] != undefined && val['status'] == "offline")
+					{
+						ffMarkerStyle = L.divIcon({className: 'marker-cluster offlinemarker-cluster leaflet-zoom-animated leaflet-clickable ffMarkerStyle', iconSize: [40, 40], html: '<div></div>'});
+					}
+					
+					var marker1 = L.marker([val.location.latitude, val.location.longitude], {icon: ffMarkerStyle});
 					marker1.bindPopup("<b>" + val.hostname + "</b><br>");
 					marker1.on('mouseover', marker1.openPopup.bind(marker1));
 					
-					markers.addLayer(marker1);
-					//nodesList.push(val);	
+					
+					if(val['status'] != undefined && val['status'] == "offline")
+					{
+						markersOffline.addLayer(marker1);
+					}
+					else
+					{
+						markers.addLayer(marker1);
+						nodesonlinecount++;
+					}
 				}
 				
 				//Add node to  Node-List
 				$( "#nodes" ).DataTable().row.add( {
-					"id": 		val['node_id'],
+					"id": 		nodescount,
+					"Status": 	val['status'] != undefined && val['status'] == "offline" ? '<span class="ui-icon ui-icon-close"></span>' : '',
 			        "Node":    	val['hostname'],
-			        "Mac": 		val['network']['mac'],
+			        "Mac": 		val['network'] == undefined ? '' : val['network']['mac'],
 			        "Clients":  val['clients']['wifi'],
 			        "Model": 	val['hardware']['model'],
 			        "location": val['location'] == undefined ? 'no' : 'yes',
@@ -144,15 +214,13 @@ $(document).ready(function(){
 			$("#nodescount").html("Nodes total: " + nodescount);
 		    $("#nodesloc").html("Nodes with location: " + nodesloc);
 		    $("#nodeswifi").html("Wifi-Clients: " + nodeswifi);
+		    $("#tabInfo").html("Online Nodes: " + nodesonlinecount);
 		});
 	} 
 	catch (err) 
 	{
 	    console.log(err);
 	}
-	
-	map.addLayer(markers);
-	
 	
 	// Managed Click for Location Info (get Koordinaten für neue Freifunk Nodes)
 	var logo= L.control({
@@ -182,8 +250,10 @@ $(document).ready(function(){
 	//init NodeList
 	$('#nodes').DataTable({
 		paging: false,
+		stateSave: true,
 		columns: [
         	{ data: "id", visible: false, },
+        	{ data: "Status" },
         	{ data: "Node" },
             { data: "Mac" },
             { data: "Clients" },
@@ -192,7 +262,13 @@ $(document).ready(function(){
             { data: "update" },
             { data: "gluon" },
             { data: "release" }
-        ]
+        ],
+        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+            if ( aData['Status'] != "" )
+            {
+                $('td', nRow).css('background-color', "rgba(0, 158, 224, 0.1)");
+            }
+        }
 	});
 	
 	//call this for specific tab
