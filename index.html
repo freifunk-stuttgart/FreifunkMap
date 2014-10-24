@@ -188,7 +188,6 @@ $(document).ready(function(){
 					else
 					{
 						markers.addLayer(marker1);
-						nodesonlinecount++;
 					}
 				}
 				
@@ -206,6 +205,11 @@ $(document).ready(function(){
 			        "release": 	val['software']['firmware']['release'],
 			    } ).draw();
 			    
+			    //fill counters
+			    if(val['status'] == undefined || val['status'] != undefined && val['status'] != "online")
+				{
+					nodesonlinecount++;
+				}
 			    nodescount++;
 			    val['location'] == undefined ? null : nodesloc++;
 			    nodeswifi += val['clients']['wifi'];
