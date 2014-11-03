@@ -40,7 +40,7 @@
 			<ul>
 				<li><a href="#mapView">Map</a></li>
 				<li><a href="#nodeList">Node List</a></li>
-				<li id="tabInfo"></li>
+				<li id="tabInfo"> </li>
 			</ul>
 			
 			<div id="mapView"> 
@@ -107,14 +107,14 @@ $(document).ready(function(){
 			} else {
 				c += 'large';
 			}
-			return new L.DivIcon({ html: '<div><span>' + childCount + '</span></div>', className: 'marker-cluster' + c, iconSize: new L.Point(40, 40) });
+			return new L.DivIcon({ html: '<div><span><b>' + childCount + '</b></span></div>', className: 'marker-cluster' + c, iconSize: new L.Point(40, 40) });
 	    }
 	});
 
 	var markersOffline = new L.MarkerClusterGroup({
 	    iconCreateFunction: function(cluster) {
 	    	var childCount = cluster.getChildCount();
-	        return new L.DivIcon({ html: '<div><span>' + childCount + '</span></div>', className: 'marker-cluster offlinemarker-cluster', iconSize: new L.Point(40, 40) });
+	        return new L.DivIcon({ html: '<div><span><b>' + childCount + '</b></span></div>', className: 'marker-cluster offlinemarker-cluster', iconSize: new L.Point(40, 40) });
 	    }
 	});
 
@@ -218,7 +218,7 @@ $(document).ready(function(){
 			$("#nodescount").html("Nodes total: " + nodescount);
 		    $("#nodesloc").html("Nodes with location: " + nodesloc);
 		    $("#nodeswifi").html("Wifi-Clients: " + nodeswifi);
-		    $("#tabInfo").html("Online Nodes: " + nodesonlinecount);
+		    $("#tabInfo").html("Online Nodes: " + nodesonlinecount + " | Clients: " + nodeswifi);
 		});
 	} 
 	catch (err) 
