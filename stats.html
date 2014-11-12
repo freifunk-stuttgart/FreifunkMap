@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="Chart/Chart.js"></script>
+  </head>
+  <body>
+  	<h2 align="center">Daily Peak</h2>
+  	<canvas id="canvasdaily" height="100px" style="height: 100px;"> </canvas>
+  	
+  	<h2 align="center">Hour Peak (last 24h)</h2>
+  	<canvas id="canvashourly" height="100px" style="height: 100px;"> </canvas>
+  </body>
+</html>
+
+<script>
+
+//color nodes_total
+var fillColor_nodes_total = "rgba(220,220,220,0.2)"; //the color witch fills the aria unter the line
+var	strokeColor_nodes_total = "rgba(220,220,220,1)"; //the color of the line
+var pointColor_nodes_total = strokeColor_nodes_total; //the color of the data points on the line
+var pointStrokeColor_nodes_total = "#fff"; //the color around the data points
+var pointHighlightFill_nodes_total = "#fff"; //the color of the data points on the line when there are on focuse
+var pointHighlightStroke_nodes_total = strokeColor_nodes_total; //the color around the data points on the line when there are on focuse
+
+//color nodes_online
+var fillColor_nodes_online = "rgba(0,158,224,0.2)"; //the color witch fills the aria unter the line
+var	strokeColor_nodes_online = "rgba(0,158,224,1)"; //the color of the line
+var pointColor_nodes_online = strokeColor_nodes_online; //the color of the data points on the line
+var pointStrokeColor_nodes_online = "#fff"; //the color around the data points
+var pointHighlightFill_nodes_online = "#fff"; //the color of the data points on the line when there are on focuse
+var pointHighlightStroke_nodes_online = strokeColor_nodes_online; //the color around the data points on the line when there are on focuse
+
+//color clients
+var fillColor_clients = "rgba(255,180,0,0.2)"; //the color witch fills the aria unter the line
+var	strokeColor_clients = "rgba(255,180,0,1)"; //the color of the line
+var pointColor_clients = strokeColor_clients; //the color of the data points on the line
+var pointStrokeColor_clients = "#fff"; //the color around the data points
+var pointHighlightFill_clients = "#fff"; //the color of the data points on the line when there are on focuse
+var pointHighlightStroke_clients = strokeColor_clients; //the color around the data points on the line when there are on focuse
+
+
+$(document).ready(function(){
+	var daily = ['day','clients', 'nodes_online', 'nodes_total'];
+	daily['day'] = [];
+	daily['clients'] = [];
+	daily['nodes_online'] = [];
+	daily['nodes_total'] = [];
+	
+	var hourly = ['hour','clients', 'nodes_online', 'nodes_total'];
+	hourly['hour'] = [];
+	hourly['clients'] = [];
+	hourly['nodes_online'] = [];
+	hourly['nodes_total'] = [];
+	
+	try 
+	{ 
+		$.getJSON("./json/stats.json?nocache=" + (new Date()).getTime(),
+		function(data) 
+		{
+			$.each( data["daily"], function( key, val ) 
+			{
+				daily['day'].push(key);
+				daily['clients'].push(val['clients']);
+				daily['nodes_online'].push(val['nodes_online']);
+				daily['nodes_total'].push(val['nodes_total']);
+			});
+			
+			
+			$.each( data['hourly'], function( key, val ) 
+			{	
+				var index = parseInt(key);
+				var nowhour = new Date().getHours();
+				if(index <= nowhour)
+				{
+					index += (23-nowhour);
+				}
+				else 
+				{
+					index -= nowhour+1;
+				}
+				hourly['hour'][index] = key;	
+				hourly['clients'][index] = val['clients'];
+				hourly['nodes_online'][index] = val['nodes_online'];
+				hourly['nodes_total'][index] =val['nodes_total'];
+			});
+		}).done(function(){
+			
+			var data = {
+		    labels: daily['day'],
+		    datasets: [
+		        {
+		            label: "Total Nodes",
+		            fillColor: fillColor_nodes_total,
+		            strokeColor: strokeColor_nodes_total,
+		            pointColor: pointColor_nodes_total,
+		            pointStrokeColor: pointStrokeColor_nodes_total,
+		            pointHighlightFill: pointHighlightFill_nodes_total,
+		            pointHighlightStroke: pointHighlightStroke_nodes_total,
+		            data: daily['nodes_total']
+		        },
+		        {
+		            label: "Online Nodes",
+		            fillColor: fillColor_nodes_online,
+		            strokeColor: strokeColor_nodes_online,
+		            pointColor: pointColor_nodes_online,
+		            pointStrokeColor: pointStrokeColor_nodes_online,
+		            pointHighlightFill: pointHighlightFill_nodes_online,
+		            pointHighlightStroke: pointHighlightStroke_nodes_online,
+		            data: daily['nodes_online']
+		        },
+		        {
+		            label: "Clients",
+		            fillColor: fillColor_clients,
+		            strokeColor: strokeColor_clients,
+		            pointColor: pointColor_clients,
+		            pointStrokeColor: pointStrokeColor_clients,
+		            pointHighlightFill: pointHighlightFill_clients,
+		            pointHighlightStroke: pointHighlightStroke_clients,
+		            data: daily['clients']
+		        }
+		    ]
+			};
+			
+			var ctdaily = $("#canvasdaily").get(0).getContext("2d");
+			new Chart(ctdaily).Line(data, {
+					responsive: true,
+					multiTooltipTemplate: "<%= value %> <%= datasetLabel %>"
+				});
+			
+			//set labels for hour peak chart
+			data.labels = hourly['hour'];
+			data.datasets[0].data = hourly['nodes_total'];
+			data.datasets[1].data = hourly['nodes_online'];
+			data.datasets[2].data = hourly['clients'];
+
+			var cthourly = $("#canvashourly").get(0).getContext("2d");
+			new Chart(cthourly).Line(data, {
+				responsive: true,
+				multiTooltipTemplate: "<%= value %> <%= datasetLabel %>"
+			});
+		});
+	} 
+	catch (err) 
+	{
+	    console.log(err);
+	}
+});
+</script>

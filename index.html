@@ -40,6 +40,7 @@
 			<ul>
 				<li><a href="#mapView">Map</a></li>
 				<li><a href="#nodeList">Node List</a></li>
+				<li><a href="stats.html">Statistik</a></li>
 				<li id="tabInfo"> </li>
 			</ul>
 			
@@ -206,7 +207,7 @@ $(document).ready(function(){
 			    } ).draw();
 			    
 			    //fill counters
-			    if(val['status'] == undefined || val['status'] == "online")
+			    if(val['status'] == undefined || val['status'] != undefined && val['status'] != "online")
 				{
 					nodesonlinecount++;
 				}
