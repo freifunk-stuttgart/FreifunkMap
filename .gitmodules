@@ -4,3 +4,6 @@
 [submodule "DataTables"]
 	path = DataTables
 	url = https://github.com/DataTables/DataTables
+[submodule "Chart"]
+	path = Chart
+	url = https://github.com/nnnick/Chart.js.git
