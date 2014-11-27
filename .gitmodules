@@ -1,9 +1,9 @@
-[submodule "Leaflet.markercluster"]
-	path = Leaflet.markercluster
-	url = https://github.com/Leaflet/Leaflet.markercluster.git
 [submodule "DataTables"]
 	path = DataTables
 	url = https://github.com/DataTables/DataTables
 [submodule "Chart"]
 	path = Chart
 	url = https://github.com/nnnick/Chart.js.git
+[submodule "Leaflet.markercluster"]
+	path = Leaflet.markercluster
+	url = https://github.com/Leaflet/Leaflet.markercluster
