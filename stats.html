@@ -136,6 +136,7 @@ $(document).ready(function(){
 			var cthourly = $("#canvashourly").get(0).getContext("2d");
 			new Chart(cthourly).Line(data, {
 				responsive: true,
+				scaleBeginAtZero : true,
 				multiTooltipTemplate: "<%= value %> <%= datasetLabel %>"
 			});
 		});
