@@ -124,6 +124,7 @@ $(document).ready(function(){
 			var ctdaily = $("#canvasdaily").get(0).getContext("2d");
 			new Chart(ctdaily).Line(data, {
 					responsive: true,
+					scaleBeginAtZero: true,
 					multiTooltipTemplate: "<%= value %> <%= datasetLabel %>"
 				});
 			
@@ -136,7 +137,7 @@ $(document).ready(function(){
 			var cthourly = $("#canvashourly").get(0).getContext("2d");
 			new Chart(cthourly).Line(data, {
 				responsive: true,
-				scaleBeginAtZero : true,
+				scaleBeginAtZero: true,
 				multiTooltipTemplate: "<%= value %> <%= datasetLabel %>"
 			});
 		});
