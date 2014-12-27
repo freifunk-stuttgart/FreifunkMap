@@ -57,7 +57,7 @@
 				
 				<table id="nodes" class="display" width="100%" cellspacing="0">
 					<thead>
-						<th class="hidden">Id</th><th> </th><th>Node</th><th>Mac</th><th>Clients</th><th>Model</th><th>location</th><th>update</th><th>gluon</th><th>release</th>
+						<th class="hidden">Id</th><th> </th><th>Node</th><th>Clients</th><th>Model</th><th>location</th><th>update</th><th>gluon</th><th>release</th>
 					</thead>
 				</table>
 			</div>
@@ -197,7 +197,6 @@ $(document).ready(function(){
 					"id": 		nodescount,
 					"Status": 	val['status'] != undefined && val['status'] == "offline" ? '<span class="ui-icon ui-icon-close"></span>' : '',
 			        "Node":    	val['hostname'],
-			        "Mac": 		val['network'] == undefined ? '' : val['network']['mac'],
 			        "Clients":  val['clients']['wifi'],
 			        "Model": 	val['hardware']['model'],
 			        "location": val['location'] == undefined ? 'no' : 'yes',
@@ -260,7 +259,6 @@ $(document).ready(function(){
         	{ data: "id", visible: false, },
         	{ data: "Status" },
         	{ data: "Node" },
-            { data: "Mac" },
             { data: "Clients" },
             { data: "Model" },
             { data: "location" },
