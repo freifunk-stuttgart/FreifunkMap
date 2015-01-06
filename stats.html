@@ -54,7 +54,7 @@ $(document).ready(function(){
 	
 	try 
 	{ 
-		$.getJSON("./json/getjson.php?ressource=stats.json?nocache=" + (new Date()).getTime(),
+		$.getJSON("./json/stats.json?nocache=" + (new Date()).getTime(),
 		function(data) 
 		{
 			$.each( data["daily"], function( key, val ) 

@@ -180,7 +180,7 @@ $(document).ready(function(){
 	    		try 
 				{ 
 					$.ajax({
-					  url: "./json/getjson.php?ressource=batman-vis.json&nocache=" + (new Date()).getTime(),
+					  url: "./json/batman-vis.json&nocache=" + (new Date()).getTime(),
 					  dataType: "text"
 					}).done(function(data) {
 						//workaroud because json file is not valid, only each line it self is valid...
@@ -274,7 +274,7 @@ $(document).ready(function(){
 
 	try 
 	{
-		$.getJSON("./json/getjson.php?ressource=alfred-json-map.json&nocache=" + (new Date()).getTime(),
+		$.getJSON("./json/alfred-json-map.json&nocache=" + (new Date()).getTime(),
 		function(data) 
 		{
 			$.each( data, function( key, val ) 
