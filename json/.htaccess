@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^([^/]*)/$ ./getjson.php?ressource=$1 [L]
