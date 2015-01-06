@@ -131,14 +131,18 @@ $(document).ready(function(){
 	
 	var mashLayer = L.layerGroup();
 	
-	var mapboxtile = L.tileLayer('http://{s}.tiles.mapbox.com/v3/examples.map-i87786ca/{z}/{x}/{y}.png', {id: 'MapID', attribution: '&copy <a href="https://www.mapbox.com/">Map data</a> &copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'});
+	//var mapboxtile = L.tileLayer('http://{s}.tiles.mapbox.com/v3/examples.map-i87786ca/{z}/{x}/{y}.png', {id: 'MapID', attribution: '&copy <a href="https://www.mapbox.com/">Map data</a> &copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'});
     //var osmtile = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {id: 'MapID', attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'});
-
+	
+	if(L.Browser.retina) var tp = "lr";
+        else var tp = "ls";
+	var Lyrktile = L.tileLayer('http://tiles.lyrk.org/'+tp+'/{z}/{x}/{y}?apikey=d0155ec154f84f06a12e3033590de4f7', {attribution: '<a href="http://geodienste.lyrk.de/copyright">Lizenzinformationen</a>, Tiles by <a href="http://geodienste.lyrk.de/">Lyrk</a>'});
+	
 	//init map
 	var map = L.map('mapView', {
 	    center: [48.7986, 9.2048],
 	    zoom: 11,
-	    layers: [mapboxtile]
+	    layers: [Lyrktile]
 	});
 	map.addLayer(markers);
 	//add  scale to map
@@ -180,7 +184,7 @@ $(document).ready(function(){
 	    		try 
 				{ 
 					$.ajax({
-					  url: "./json/batman-vis.json&nocache=" + (new Date()).getTime(),
+					  url: "./json/batman-vis.json?nocache=" + (new Date()).getTime(),
 					  dataType: "text"
 					}).done(function(data) {
 						//workaroud because json file is not valid, only each line it self is valid...
@@ -274,7 +278,7 @@ $(document).ready(function(){
 
 	try 
 	{
-		$.getJSON("./json/alfred-json-map.json&nocache=" + (new Date()).getTime(),
+		$.getJSON("./json/alfred-json-map.json?nocache=" + (new Date()).getTime(),
 		function(data) 
 		{
 			$.each( data, function( key, val ) 
