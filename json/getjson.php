@@ -7,9 +7,6 @@
 
  
  provides access to the json data
- example requests
-  
- GET: /alfred-json-map.json <-- JSON 
  */
 header('Content-type: application/json'); // Always talk JSON
 	
