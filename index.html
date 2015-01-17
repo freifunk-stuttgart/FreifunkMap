@@ -54,7 +54,7 @@
 			<div id="nodeList">
 				<p id="nodescount"> </p>
 				<p id="nodesloc"> </p>
-				<p id="nodeswifi"> </p>
+				<p id="nodesclients"> </p>
 				
 				<table id="nodes" class="display" width="100%" cellspacing="0">
 					<thead>
@@ -131,7 +131,6 @@ $(document).ready(function(){
 	
 	var mashLayer = L.layerGroup();
 	
-	//var mapboxtile = L.tileLayer('http://{s}.tiles.mapbox.com/v3/examples.map-i87786ca/{z}/{x}/{y}.png', {id: 'MapID', attribution: '&copy <a href="https://www.mapbox.com/">Map data</a> &copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'});
     //var osmtile = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {id: 'MapID', attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'});
 	
 	if(L.Browser.retina) var tp = "lr";
@@ -274,7 +273,7 @@ $(document).ready(function(){
 	var nodescount = 0;
 	var nodesonlinecount = 0;
 	var nodesloc = 0;
-	var nodeswifi = 0;
+	var nodesclients = 0;
 
 	try 
 	{
@@ -321,7 +320,7 @@ $(document).ready(function(){
 					"id": 		nodescount,
 					"Status": 	val['status'] != undefined && val['status'] == "offline" ? '<span class="ui-icon ui-icon-close"></span>' : '',
 			        "Node":    	val['hostname'],
-			        "Clients":  val['clients']['wifi'],
+			        "Clients":  val['clients']['total'],
 			        "Model": 	val['hardware']['model'],
 			        "location": val['location'] == undefined ? 'no' : 'yes',
 			        "update":  	val['software']['autoupdater']['branch'] + "  (" + val['software']['autoupdater']['enabled'] + ")",
@@ -336,13 +335,13 @@ $(document).ready(function(){
 				}
 			    nodescount++;
 			    val['location'] == undefined ? null : nodesloc++;
-			    nodeswifi += val['clients']['wifi'];
+			    nodesclients += val['clients']['total'];
 			});
 			
 			$("#nodescount").html("Nodes total: " + nodescount);
 		    $("#nodesloc").html("Nodes with location: " + nodesloc);
-		    $("#nodeswifi").html("Wifi-Clients: " + nodeswifi);
-		    $("#tabInfo").html("Online Nodes: " + nodesonlinecount + " | Clients: " + nodeswifi);
+		    $("#nodesclients").html("Clients: " + nodesclients);
+		    $("#tabInfo").html("Online Nodes: " + nodesonlinecount + " | Clients: " + nodesclients);
 		});
 	} 
 	catch (err) 
