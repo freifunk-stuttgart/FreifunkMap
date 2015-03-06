@@ -40,6 +40,8 @@ var pointHighlightStroke_clients = strokeColor_clients; //the color around the d
 
 
 $(document).ready(function(){
+	$("#dvloader").show();
+
 	var daily = ['day','clients', 'nodes_online', 'nodes_total'];
 	daily['day'] = [];
 	daily['clients'] = [];
@@ -51,9 +53,9 @@ $(document).ready(function(){
 	hourly['clients'] = [];
 	hourly['nodes_online'] = [];
 	hourly['nodes_total'] = [];
-	
+
 	try 
-	{ 
+	{
 		$.getJSON("./json/stats.json?nocache=" + (new Date()).getTime(),
 		function(data) 
 		{
@@ -140,11 +142,14 @@ $(document).ready(function(){
 				scaleBeginAtZero: true,
 				multiTooltipTemplate: "<%= value %> <%= datasetLabel %>"
 			});
+
+			$("#dvloader").hide();
 		});
 	} 
 	catch (err) 
 	{
 	    console.log(err);
+	    $("#dvloader").hide();
 	}
 });
 </script>

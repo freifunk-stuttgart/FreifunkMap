@@ -35,7 +35,7 @@
 		
 	</head>
 	
-	<body>
+	<body>				
 		<div id="tabs">
 			<ul>
 				<li><a href="#mapView">Map</a></li>
@@ -43,8 +43,11 @@
 				<li><a href="stats.html">Statistik</a></li>
 				<li id="tabInfo"> </li>
 			</ul>
-			
+
+			<div style="display:none; position: absolute; top: 50%; left: 50%; margin-top: -50px; margin-left: -50px; z-index:999;" id="dvloader"><img src="images/loading.gif" /></div>
+
 			<div id="mapView"> 
+
 				<nav class='menu-ui'>
 				  <a href='#' id='online' class='active'>Online Nodes</a>
 				  <a href='#' id='offline'>Offline Nodes</a>
@@ -178,7 +181,7 @@ $(document).ready(function(){
 	    	
 	    	if(mashLayer.getLayers().length == 0)
 	    	{
-	    		//TODO show loading bar
+	    		$("#dvloader").show();
 	    		
 	    		try 
 				{ 
@@ -228,7 +231,6 @@ $(document).ready(function(){
 						var best = 1;
 						$.each(nodesMesh, function(i, item)
 						{
-							console.log(item);
 							var node1 = item[0];
 							var node2 = item[1];
 							var quality = item[2];
@@ -256,10 +258,12 @@ $(document).ready(function(){
 							mashLayer.addLayer(polyline);
 						});
 					});
+					$("#dvloader").hide();
 				} 
 				catch (err) 
 				{
 				    console.log(err);
+				    $("#dvloader").hide();
 				}
 	    	}
 	    	
@@ -277,22 +281,28 @@ $(document).ready(function(){
 
 	try 
 	{
+		$("#dvloader").show();
 		$.getJSON("./json/alfred-json-map.json?nocache=" + (new Date()).getTime(),
 		function(data) 
 		{
+
+			var ffMarkerOnline = L.divIcon({className: 'marker-cluster onlinemarker-cluster-small leaflet-zoom-animated leaflet-clickable ffMarkerStyle', iconSize: [40, 40], html: '<div></div>'});
+
+			var	ffMarkerOffline = L.divIcon({className: 'marker-cluster offlinemarker-cluster leaflet-zoom-animated leaflet-clickable ffMarkerStyle', iconSize: [40, 40], html: '<div></div>'});
+
 			$.each( data, function( key, val ) 
 			{	
 				if(val.location != undefined)
 				{
-					var ffMarkerStyle = L.divIcon({className: 'marker-cluster onlinemarker-cluster-small leaflet-zoom-animated leaflet-clickable ffMarkerStyle', iconSize: [40, 40], html: '<div></div>'});
+					var ffMarkerStyle = ffMarkerOnline;
 
 					if(val['status'] != undefined && val['status'] == "offline")
 					{
-						ffMarkerStyle = L.divIcon({className: 'marker-cluster offlinemarker-cluster leaflet-zoom-animated leaflet-clickable ffMarkerStyle', iconSize: [40, 40], html: '<div></div>'});
+						ffMarkerStyle = ffMarkerOffline;
 					}
 					
 					var marker1 = L.marker([val.location.latitude, val.location.longitude], {icon: ffMarkerStyle});
-					marker1.bindPopup("<b>" + val.hostname + "</b><br>");
+					marker1.bindPopup("<b>" + val.hostname + "</b><br>" + val['clients']['total'] + " Clients");
 					marker1.on('mouseover', marker1.openPopup.bind(marker1));
 					
 					
@@ -305,7 +315,6 @@ $(document).ready(function(){
 						markers.addLayer(marker1);
 					}
 					
-					
 					//fill nodesLocation for drawing later mesh
 					if(val['network'] != undefined && val['network']['mesh_interfaces'] != undefined)
 					{
@@ -316,7 +325,7 @@ $(document).ready(function(){
 				}
 				
 				//Add node to  Node-List
-				$( "#nodes" ).DataTable().row.add( {
+				$("#nodes").DataTable().row.add( {
 					"id": 		nodescount,
 					"Status": 	val['status'] != undefined && val['status'] == "offline" ? '<span class="ui-icon ui-icon-close"></span>' : '',
 			        "Node":    	val['hostname'],
@@ -326,7 +335,7 @@ $(document).ready(function(){
 			        "update":  	val['software']['autoupdater']['branch'] + "  (" + val['software']['autoupdater']['enabled'] + ")",
 			        "gluon": 	val['software']['firmware']['base'],
 			        "release": 	val['software']['firmware']['release'],
-			    } ).draw();
+			    } );
 			    
 			    //fill counters
 			    if(val['status'] == undefined || val['status'] == "online")
@@ -342,11 +351,15 @@ $(document).ready(function(){
 		    $("#nodesloc").html("Nodes with location: " + nodesloc);
 		    $("#nodesclients").html("Clients: " + nodesclients);
 		    $("#tabInfo").html("Online Nodes: " + nodesonlinecount + " | Clients: " + nodesclients);
+		    $("#nodes").DataTable().draw();
 		});
+		
+		$("#dvloader").hide();
 	} 
 	catch (err) 
 	{
 	    console.log(err);
+	    $("#dvloader").hide();
 	}
 	
 	// Managed Click for Location Info (get Koordinaten für neue Freifunk Nodes)
