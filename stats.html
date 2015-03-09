@@ -127,6 +127,7 @@ $(document).ready(function(){
 			new Chart(ctdaily).Line(data, {
 					responsive: true,
 					scaleBeginAtZero: true,
+					animation: false,
 					multiTooltipTemplate: "<%= value %> <%= datasetLabel %>"
 				});
 			
@@ -140,6 +141,7 @@ $(document).ready(function(){
 			new Chart(cthourly).Line(data, {
 				responsive: true,
 				scaleBeginAtZero: true,
+				animation: false,
 				multiTooltipTemplate: "<%= value %> <%= datasetLabel %>"
 			});
 
