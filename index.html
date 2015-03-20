@@ -111,6 +111,7 @@ $(document).ready(function(){
 	var nodesLocation = new Array();
 	
 	var markers = new L.MarkerClusterGroup({
+		disableClusteringAtZoom: 18,
 	    iconCreateFunction: function(cluster) {
 	    	var childCount = cluster.getChildCount();
 	        var c = ' onlinemarker-cluster-';
