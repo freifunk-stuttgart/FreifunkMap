@@ -87,6 +87,15 @@ $(document).ready(function(){
 			});
 		}).done(function(){
 			
+			if(daily['day'].length > 60)
+			{
+				var start = daily['day'].length - 60
+				daily['day'] = daily['day'].slice(start);
+				daily['clients'] = daily['clients'].slice(start);
+				daily['nodes_online'] = daily['nodes_online'].slice(start);
+				daily['nodes_total'] = daily['nodes_total'].slice(start);
+			}
+			
 			var data = {
 		    labels: daily['day'],
 		    datasets: [
