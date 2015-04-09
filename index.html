@@ -293,7 +293,7 @@ $(document).ready(function(){
 
 			$.each( data, function( key, val ) 
 			{	
-				if(val.location != undefined)
+				if(val.location != undefined && val.location.latitude != undefined && val.location.longitude != undefined)
 				{
 					var ffMarkerStyle = ffMarkerOnline;
 
