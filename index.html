@@ -61,7 +61,7 @@
 				
 				<table id="nodes" class="display" width="100%" cellspacing="0">
 					<thead>
-						<th class="hidden">Id</th><th> </th><th>Node</th><th>Clients</th><th>Model</th><th>location</th><th>update</th><th>gluon</th><th>release</th>
+						<th class="hidden">Id</th><th> </th><th>Node</th><th>Clients</th><th>Model</th><th>location</th><th>update</th><th>Version</th><th>Gateway</th>
 					</thead>
 				</table>
 			</div>
@@ -321,6 +321,32 @@ $(document).ready(function(){
 					}
 				}
 				
+				var gw = val['gateway'];
+				
+				switch(gw)
+				{
+					case '02:00:0a:38:00:01': gw = 'GW-01';
+					break;
+					case '02:00:0a:38:00:02': gw = 'GW-02';
+					break;
+					case '02:00:0a:38:00:03': gw = 'GW-03';
+					break;
+					case '02:00:0a:38:00:04': gw = 'GW-04';
+					break;
+					case '02:00:0a:38:00:05': gw = 'GW-05';
+					break;
+					case '02:00:0a:38:00:06': gw = 'GW-06';
+					break;
+					case '02:00:0a:38:00:07': gw = 'GW-07';
+					break;
+					case '02:00:0a:38:00:08': gw = 'GW-08';
+					break;
+					case '02:00:0a:38:00:09': gw = 'GW-09';
+					break;
+					case '02:00:0a:38:00:10': gw = 'GW-10';
+					break;
+				}
+				
 				//Add node to  Node-List
 				$("#nodes").DataTable().row.add( {
 					"id": 		nodescount,
@@ -330,8 +356,8 @@ $(document).ready(function(){
 			        "Model": 	val['hardware']['model'],
 			        "location": val['location'] == undefined ? 'no' : 'yes',
 			        "update":  	val['software']['autoupdater']['branch'] + "  (" + val['software']['autoupdater']['enabled'] + ")",
-			        "gluon": 	val['software']['firmware']['base'],
-			        "release": 	val['software']['firmware']['release'],
+			        "Version": 	val['software']['firmware']['base'],
+			        "Gateway": 	gw,
 			    } );
 			    
 			    //fill counters
@@ -396,8 +422,8 @@ $(document).ready(function(){
             { data: "Model" },
             { data: "location" },
             { data: "update" },
-            { data: "gluon" },
-            { data: "release" }
+            { data: "Version" },
+            { data: "Gateway" }
         ],
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
             if ( aData['Status'] != "" )
