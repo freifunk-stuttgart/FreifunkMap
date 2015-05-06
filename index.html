@@ -374,7 +374,10 @@ $(document).ready(function(){
 		    $("#nodesloc").html("Nodes with location: " + nodesloc);
 		    $("#nodesclients").html("Clients: " + nodesclients);
 		    $("#tabInfo").html("Online Nodes: " + nodesonlinecount + " | Clients: " + nodesclients);
-		    $("#nodes").DataTable().draw();
+		    
+		    var order = $("#nodes").DataTable().order();
+		    if(order[0][0] == 0) {order[0][0] = 3; order[0][1] = 'desc';}
+		    $("#nodes").DataTable().order( [ order[0][0], order[0][1] ] ).draw();
 		});
 		
 		$("#dvloader").hide();
