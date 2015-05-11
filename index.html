@@ -137,9 +137,17 @@ $(document).ready(function(){
 	
     var osmtile = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {id: 'MapID', attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'});
 	
+	
+	//init map	
+	var longitude = getParam('longitude');
+	var latitude = getParam('latitude');
+
+	if(longitude == false){longitude = '48.7986';}
+	if(latitude == false){latitude = '9.2048';}
+
 	//init map
 	var map = L.map('mapView', {
-	    center: [48.7986, 9.2048],
+	    center: [longitude, latitude],
 	    zoom: 11,
 	    layers: [osmtile]
 	});
