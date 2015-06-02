@@ -2,7 +2,7 @@
 /*
  * @author     Flip
  * @package    ffMap
- * @version    1.0
+ * @version    1.2
  * @licenses	CC-BY-SA Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz. https://creativecommons.org/licenses/by-sa/4.0/
  */ 
 -->
@@ -15,16 +15,16 @@
 		<link rel="stylesheet" href="style.css">
 		
 		<!-- jQuerry -->
-		<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-		<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="js/jquery-1.11.0.min.js"></script>
+		<script src="js/jquery-migrate-1.2.1.min.js"></script>
 	
 		<!-- jQuerry UI -->
 		<link rel="stylesheet" href="jquery-ui-1.11.2.custom/jquery-ui.min.css">
 		<script src="jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>
 
 		<!-- jleaflet -->
-		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-		<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+		<link rel="stylesheet" href="js/leaflet.css" />
+		<script src="js/leaflet.js"></script>
 		
 		<link rel="stylesheet" href="Leaflet.markercluster/dist/MarkerCluster.css" />
 		<script src="Leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
@@ -141,14 +141,16 @@ $(document).ready(function(){
 	//init map	
 	var longitude = getParam('longitude');
 	var latitude = getParam('latitude');
+	var zoom = getParam('zoom');
 
 	if(longitude == false){longitude = '48.7986';}
 	if(latitude == false){latitude = '9.2048';}
+	if(zoom == false){zoom = '11';}
 
 	//init map
 	var map = L.map('mapView', {
 	    center: [longitude, latitude],
-	    zoom: 11,
+	    zoom: zoom,
 	    layers: [osmtile]
 	});
 	map.addLayer(markers);
