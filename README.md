@@ -10,7 +10,7 @@ Add to the URL ?name=value. You can add multiple params with the '&' character.
 Example: http://gw01.freifunk-stuttgart.de/map/?longitude=48.7&latitude=9.2
 
 * Preselect the Tab: tab=0 (start counting from 0)
-* Location (Longitude): latitude=48.7986
+* Location (Longitude): longitude=48.7986
 * Location (Latitude):  latitude=9.2048
 * Zoomlevel: zoom=11 (Zoomlevel details: http://wiki.openstreetmap.org/wiki/Zoom_levels)
 
