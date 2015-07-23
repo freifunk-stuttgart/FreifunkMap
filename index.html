@@ -109,6 +109,7 @@ $(document).ready(function(){
 	});
 	
 	var nodesLocation = new Array();
+	var doublelocation = new Array();
 	
 	var markers = new L.MarkerClusterGroup({
 		disableClusteringAtZoom: 18,
@@ -299,26 +300,46 @@ $(document).ready(function(){
 
 			$.each( data, function( key, val ) 
 			{	
-				if(val.location != undefined && val.location.latitude != undefined && val.location.longitude != undefined)
-				{
-					var ffMarkerStyle = ffMarkerOnline;
+				if(val.location != undefined && val.location.latitude != undefined && val.location.longitude != undefined) {
+                    var ffMarkerStyle = ffMarkerOnline;
 
-					if(val['status'] != undefined && val['status'] == "offline")
-					{
-						ffMarkerStyle = ffMarkerOffline;
-					}
-					
-					var marker1 = L.marker([val.location.latitude, val.location.longitude], {icon: ffMarkerStyle});
-					marker1.bindPopup("<b>" + val.hostname + "</b><br>" + val['clients']['total'] + " Clients");
-					marker1.on('mouseover', marker1.openPopup.bind(marker1));
-					
-					
+                    if (val['status'] != undefined && val['status'] == "offline") {
+                        ffMarkerStyle = ffMarkerOffline;
+                    }
+
+                    var marker1 = L.marker([val.location.latitude, val.location.longitude], {icon: ffMarkerStyle});
+                    marker1.bindPopup("<b>" + val.hostname + "</b><br>" + val['clients']['total'] + " Clients");
+                    marker1.on('mouseover', marker1.openPopup.bind(marker1));
+
 					if(val['status'] != undefined && val['status'] == "offline")
 					{
 						markersOffline.addLayer(marker1);
 					}
 					else
 					{
+                        //is already a marker on this position -> update Popup
+                        var total = val['clients']['total'];
+                        $.each(doublelocation, function(i, item){
+                            if(marker1.getLatLng().equals(item.marker.getLatLng()))
+                            {
+                                //renew marker
+                                item.clients += val['clients']['total'];
+
+                                var popup = item.marker.getPopup();
+                                popup.setContent("<b> [Total Clients:" + item.clients + "]</b><br><br>" + popup.getContent().replace(/<b> \[Total Clients:.*?\]<\/b><br><br>/, "") + "<br><b>" + val.hostname + "</b><br>" + val['clients']['total'] + " Clients");
+                                popup.update();
+
+                                popupCurrent = marker1.getPopup();
+                                popupCurrent.setContent(popup.getContent());
+                                popupCurrent.update();
+                            }
+                        });
+
+                        doublelocation.push({
+                            marker: marker1,
+                            clients: total
+                        });
+
 						markers.addLayer(marker1);
 					}
 					
