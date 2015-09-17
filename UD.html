@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Umsonst und Draußen</title>
+    <!-- jQuerry -->
+    <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="js/jquery-migrate-1.2.1.min.js"></script>
+</head>
+<body>
+<h1>U&D</h1>
+<br> <h1 id="clients"></h1>
+</body>
+</html>
+
+<script>
+
+    try {
+        $(document).ready(function () {
+            var clientCount = 0;
+            var nodeCount = 0;
+            var nodeCountOffline = 0;
+
+            $.getJSON("./json/alfred-json-map.json?nocache=" + (new Date()).getTime(),
+            function (data) {
+                $.each(data, function (key, val) {
+                switch (key)
+                {
+                    case 'e8:de:27:fd:2f:14': //ffs-UD-switch-buehne
+                    case '64:66:b3:eb:0a:4e': //ffs-UD-switch-buehne2
+                    case 'e8:de:27:ad:75:4a': //ffs-UD00
+                    case 'e8:94:f6:f3:13:09': //ffs-UD04-zelt
+                    case 'e8:de:27:bc:78:c6': //ffs-UD06
+                    case '14:cc:20:52:20:7a': //ffs-UD07
+                    case '00:27:22:2a:f1:6e': //ffs-UD08
+                    case 'c4:6e:1f:b3:79:f2': //ffs-UD09-Freifunk_Infostand
+                    case '00:15:6d:7c:a4:85': //ffs-UD11
+                    case '00:27:22:26:b4:c3': //ffs-UD12
+                    case '30:b5:c2:d9:a9:74': //ffs-UD13-Sani
+                    case 'c4:6e:1f:e6:d9:92': //ffs-UD14
+                    case '10:fe:ed:a0:4b:f2': //ffs-UD15
+                    case 'f8:1a:67:eb:c1:9c': //ffs-ud-weinstadt074
+                    case '10:fe:ed:e5:9f:42': //ffs-ud-weinstadt076
+                        if(val.clients != undefined && val.clients.total != undefined) {
+                            clientCount += val['clients']['total'];
+                        }
+
+
+                        if(val.status != undefined && val.status == "online")
+                        {
+                            nodeCount++;
+                        }
+                        else if (val.status != undefined)
+                        {
+                            nodeCountOffline++
+                        }
+                        break;
+                }
+            });
+                $("#clients").html("Total clients: " + clientCount
+                        + " auf " + nodeCount + " Nodes (" + nodeCountOffline + " Nodes offline)");
+        });
+    });
+    }
+    catch (err)
+    {
+        //console.log(err);
+    }
+</script>
