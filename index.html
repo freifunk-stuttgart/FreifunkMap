@@ -434,10 +434,13 @@ $(document).ready(function(){
 	logo.addTo(map);
 
 	$("#locationInfo").on("click", function() {
+		$('.leaflet-container').css('cursor','crosshair');
+
 		map.addOneTimeEventListener("click", function (e) {
 			function clickhandler(e) {
-		      prompt("Breitengrad , Längengrad", e.latlng.lat + "," + e.latlng.lng);
-		      map.off("click", clickhandler);
+		      	prompt("Breitengrad , Längengrad", e.latlng.lat + "," + e.latlng.lng);
+		      	map.off("click", clickhandler);
+				$('.leaflet-container').css('cursor','');
 		   };
 		   
 		    var clickevent = map.on('click', clickhandler);
