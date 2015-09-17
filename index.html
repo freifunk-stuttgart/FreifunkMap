@@ -28,7 +28,12 @@
 		
 		<link rel="stylesheet" href="Leaflet.markercluster/dist/MarkerCluster.css" />
 		<script src="Leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
-		
+
+		<!-- Leaflet Control OSM Geocoder -->
+		<link rel="stylesheet" href="css/l.geosearch.css" />
+		<script src="js/l.control.geosearch.js"></script>
+		<script src="js/l.geosearch.provider.openstreetmap.js"></script>
+
 		<!-- DataTables -->
 		<link rel="stylesheet" type="text/css" href="DataTables/media/css/jquery.dataTables.min.css">
 		<script type="text/javascript" charset="utf8" src="DataTables/media/js/jquery.dataTables.min.js"></script>
@@ -157,7 +162,12 @@ $(document).ready(function(){
 	map.addLayer(markers);
 	//add  scale to map
 	L.control.scale().addTo(map);
-	
+
+	//add GeoSearch to map
+	new L.Control.GeoSearch({
+		provider: new L.GeoSearch.Provider.OpenStreetMap()
+	}).addTo(map);
+
 	// show / hide layers
 	map.getContainer().querySelector('#online').onclick = function() {
 	    if (this.className === 'active') {
