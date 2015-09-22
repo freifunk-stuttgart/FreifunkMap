@@ -13,6 +13,7 @@ Example: http://gw01.freifunk-stuttgart.de/map/?longitude=48.7&latitude=9.2
 * Location (Longitude): longitude=48.7986
 * Location (Latitude):  latitude=9.2048
 * Zoomlevel: zoom=11 (Zoomlevel details: http://wiki.openstreetmap.org/wiki/Zoom_levels)
+* Node: node=e8de27ad7532 (Node Id = Mac-Adresse)
 
 
  @licenses	CC-BY-SA Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz. https://creativecommons.org/licenses/by-sa/4.0/

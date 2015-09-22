@@ -2,7 +2,7 @@
 /*
  * @author     Flip
  * @package    ffMap
- * @version    1.3.2
+ * @version    1.3.3
  * @licenses	CC-BY-SA Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz. https://creativecommons.org/licenses/by-sa/4.0/
  */ 
 -->
@@ -176,6 +176,7 @@ $(document).ready(function(){
 	var longitude = getParam('longitude');
 	var latitude = getParam('latitude');
 	var zoom = getParam('zoom');
+	var nodeIdvalue = getParam('node');
 
 	if(longitude == false){longitude = '48.7986';}
 	if(latitude == false){latitude = '9.2048';}
@@ -337,13 +338,18 @@ $(document).ready(function(){
 			var	ffMarkerOffline = L.divIcon({className: 'marker-cluster offlinemarker-cluster leaflet-zoom-animated leaflet-clickable ffMarkerStyle', iconSize: [40, 40], html: '<div></div>'});
 
 			$.each( data, function( key, val ) 
-			{	
+			{
+				//url for this node
+				var link = null;
+
 				if(val.location != undefined && val.location.latitude != undefined && val.location.longitude != undefined) {
                     var ffMarkerStyle = ffMarkerOnline;
 
                     if (val['status'] != undefined && val['status'] == "offline") {
                         ffMarkerStyle = ffMarkerOffline;
                     }
+
+					link = '?longitude=' + val.location.latitude + '&latitude=' + val.location.longitude + '&zoom=18';
 
                     var marker1 = L.marker([val.location.latitude, val.location.longitude], {icon: ffMarkerStyle});
                     marker1.bindPopup("<b>" + val.hostname + "</b><br>" + val['clients']['total'] + " Clients");
@@ -380,7 +386,12 @@ $(document).ready(function(){
 
 						markers.addLayer(marker1);
 					}
-					
+
+					if(nodeIdvalue != undefined && nodeIdvalue == key.replace(/:/g, ''))
+					{
+						map.setZoomAround(new L.LatLng(val.location.latitude,  val.location.longitude), 18,true);
+					}
+
 					//fill nodesLocation for drawing later mesh
 					if(val['network'] != undefined && val['network']['mesh_interfaces'] != undefined)
 					{
@@ -420,7 +431,7 @@ $(document).ready(function(){
 				$("#nodes").DataTable().row.add( {
 					"id": 		nodescount,
 					"Status": 	val['status'] != undefined && val['status'] == "offline" ? '<span class="ui-icon ui-icon-close"></span>' : '',
-			        "Node":    	val['hostname'],
+			        "Node":    	link == null ? val['hostname'] : '<a href="' + link + '" >' + val['hostname'] + '</a>',
 			        "Clients":  val['clients']['total'],
 			        "Model": 	val['hardware']['model'],
 			        "location": val['location'] == undefined ? 'no' : 'yes',
