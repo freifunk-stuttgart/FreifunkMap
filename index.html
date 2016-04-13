@@ -2,7 +2,7 @@
 /*
  * @author     Flip
  * @package    ffMap
- * @version    1.3.3
+ * @version    1.3.4
  * @licenses	CC-BY-SA Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz. https://creativecommons.org/licenses/by-sa/4.0/
  */ 
 -->
@@ -141,7 +141,7 @@ $(document).ready(function(){
 		}
 	});
 	
-	var nodesLocation = new Array();
+	var nodesMeshLocation = new Array();
 	var doublelocation = new Array();
 	
 	var markers = new L.MarkerClusterGroup({
@@ -246,8 +246,8 @@ $(document).ready(function(){
 						{
 							if(val.router != undefined && val.neighbor != undefined)
 							{
-								var source = nodesLocation[val.router];
-								var destination = nodesLocation[val.neighbor];
+								var source = nodesMeshLocation[val.router];
+								var destination = nodesMeshLocation[val.neighbor];
 								
 								if(source != undefined && destination != undefined)
 								{
@@ -392,11 +392,27 @@ $(document).ready(function(){
 						map.setZoomAround(new L.LatLng(val.location.latitude,  val.location.longitude), 18,true);
 					}
 
-					//fill nodesLocation for drawing later mesh
+					//fill nodesMeshLocation for drawing later mesh
 					if(val['network'] != undefined && val['network']['mesh_interfaces'] != undefined)
 					{
 						$.each(val['network']['mesh_interfaces'], function(i, mesh_interface){
-							nodesLocation[mesh_interface] = [[val.location.latitude, val.location.longitude], val.hostname];
+							nodesMeshLocation[mesh_interface] = [[val.location.latitude, val.location.longitude], val.hostname];
+						});
+					}
+
+					if(val['network'] != undefined && val['network']['mesh'] != undefined)
+					{
+						$.each(val['network']['mesh'], function(i, mesh_interface){
+							if (mesh_interface['interfaces'] != undefined && val.location.latitude != undefined && val.location.longitude != undefined) {
+								if (mesh_interface['interfaces']['other'] != undefined) {
+									nodesMeshLocation[mesh_interface['interfaces']['other']] = [[val.location.latitude, val.location.longitude], val.hostname];
+								}
+
+								if (mesh_interface['interfaces']['wireless'] != undefined) {
+									nodesMeshLocation[mesh_interface['interfaces']['wireless']] = [[val.location.latitude, val.location.longitude], val.hostname];
+								}
+							}
+
 						});
 					}
 				}
