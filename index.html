@@ -418,29 +418,39 @@ $(document).ready(function(){
 				}
 				
 				var gw = val['gateway'];
-				
+
 				switch(gw)
 				{
-					case '02:00:0a:38:00:01': gw = 'GW-01';
+					case '02:00:0a:38:00:01': gw = 'GW01';
 					break;
-					case '02:00:0a:38:00:02': gw = 'GW-02';
+					case '02:00:0a:38:00:02': gw = 'GW02';
 					break;
-					case '02:00:0a:38:00:03': gw = 'GW-03';
+					case '02:00:0a:38:00:03': gw = 'GW03';
 					break;
-					case '02:00:0a:38:00:04': gw = 'GW-04';
+					case '02:00:0a:38:00:04': gw = 'GW04';
 					break;
-					case '02:00:0a:38:00:05': gw = 'GW-05';
+					case '02:00:0a:38:00:05': gw = 'GW05';
 					break;
-					case '02:00:0a:38:00:06': gw = 'GW-06';
+					case '02:00:0a:38:00:06': gw = 'GW06';
 					break;
-					case '02:00:0a:38:00:07': gw = 'GW-07';
+					case '02:00:0a:38:00:07': gw = 'GW07';
 					break;
-					case '02:00:0a:38:00:08': gw = 'GW-08';
+					case '02:00:0a:38:00:08': gw = 'GW08';
 					break;
-					case '02:00:0a:38:00:09': gw = 'GW-09';
+					case '02:00:0a:38:00:09': gw = 'GW09';
 					break;
-					case '02:00:0a:38:00:10': gw = 'GW-10';
+					case '02:00:0a:38:00:10': gw = 'GW10';
 					break;
+					default:
+						var regex = /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/;
+						if (regex.exec(gw)) {
+							var mac = gw.split(":");
+							if (mac[5] != "00") {
+								gw = 'GW' + mac[4] + "-" + mac[5] + " (Segment: " + mac[3] + ")"
+							} else {
+								gw = 'GW' + mac[4] + " (Segment: " + mac[3] + ")";
+							}
+						}
 				}
 				
 				//Add node to  Node-List
