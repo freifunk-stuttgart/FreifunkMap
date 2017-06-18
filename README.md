@@ -2,12 +2,12 @@ FreifunkMap
 ===========
 
 
-Live preview at http://gw01.freifunk-stuttgart.de/map/
+Live preview at http://map.freifunk-stuttgart.de/
 
 
 You can call the URL with the following params (compare like in php).
 Add to the URL ?name=value. You can add multiple params with the '&' character.
-Example: http://gw01.freifunk-stuttgart.de/map/?longitude=48.7&latitude=9.2
+Example: http://map.freifunk-stuttgart.de/?longitude=48.7&latitude=9.2
 
 * Preselect the Tab: tab=0 (start counting from 0)
 * Location (Longitude): longitude=48.7986
