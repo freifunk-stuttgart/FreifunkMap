@@ -452,12 +452,13 @@ $(document).ready(function(){
 							}
 						}
 				}
-				
+
+				var statuspage = ' (<a href="http://ffs-'+key.replace(/:/g, '')+'.nodes.freifunk-stuttgart.de">Statusseite</a>)'
 				//Add node to  Node-List
 				$("#nodes").DataTable().row.add( {
 					"id": 		nodescount,
 					"Status": 	val['status'] != undefined && val['status'] == "offline" ? '<span class="ui-icon ui-icon-close"></span>' : '',
-			        "Node":    	link == null ? val['hostname'] : '<a href="' + link + '" >' + val['hostname'] + '</a>',
+			        "Node":    	link == null ? val['hostname'] + statuspage : '<a href="' + link + '" >' + val['hostname'] + '</a>' + statuspage,
 			        "Clients":  val['clients']['total'],
 			        "Model": 	val['hardware']['model'],
 			        "location": val['location'] == undefined ? 'no' : 'yes',
