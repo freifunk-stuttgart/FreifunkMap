@@ -1,7 +1,7 @@
 #requirement: ln peers-ffs (https://github.com/freifunk-stuttgart/peers-ffs) here.
 import os, json, re
 
-rootdir = './peers-ffs/'
+rootdir = os.path.dirname(__file__)+'/peers-ffs/'
 output = {}
 segments = []
 reg_compile = re.compile("vpn\d{2}")
@@ -18,5 +18,5 @@ for segment in segments:
                 if 'type' in data and data['type'] == "GeometryCollection":
                     output[segment][len(output[segment])] = data['geometries']
 
-    with open('result.json', 'w') as fp:
+    with open(os.path.dirname(__file__)+'/result.json', 'w') as fp:
         json.dump(output, fp)
