@@ -18,5 +18,5 @@ for segment in segments:
                 if 'type' in data and data['type'] == "GeometryCollection":
                     output[segment][len(output[segment])] = data['geometries']
 
-        with open(segment+'.json', 'w') as fp:
-            json.dump(output, fp)
+    with open('result.json', 'w') as fp:
+        json.dump(output, fp)
