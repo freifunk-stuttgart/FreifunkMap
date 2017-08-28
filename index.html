@@ -60,6 +60,7 @@
 				  <a href='#' id='online' class='active'>Online Nodes</a>
 				  <a href='#' id='offline'>Offline Nodes</a>
 				  <a href='#' id='mesh'>Mesh</a>
+				  <a href='#' id='segmente'>Segmente</a>
 				</nav>
 			</div>
 			<div id="nodeList">
@@ -168,7 +169,8 @@ $(document).ready(function(){
 	});
 	
 	var mashLayer = L.layerGroup();
-	
+	var segmentLayer = L.layerGroup();
+
     var osmtile = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {id: 'MapID', attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'});
 	
 	
@@ -320,6 +322,58 @@ $(document).ready(function(){
 	    return false;
 	};
 
+	map.getContainer().querySelector('#segmente').onclick = function() {
+		if (this.className === 'active') {
+			map.removeLayer(segmentLayer);
+			this.className = '';
+		} else {
+
+			if(segmentLayer.getLayers().length == 0)
+			{
+				$("#dvloader").show();
+
+				try
+				{
+					$.ajax({
+						url: "./json/result.json?nocache=" + (new Date()).getTime(),
+						dataType: "text"
+					}).done(function(data) {
+
+						var collection = jQuery.parseJSON(data);
+						$.each( collection, function(seg, geodata)
+						{
+							var color = "";
+							for(var i = 0; i < 3; i++) {
+								var sub = Math.floor(Math.random() * 256).toString(16);
+								color += (sub.length == 1 ? "0" + sub : sub);
+							}
+
+							$.each( geodata, function(keygeo, valgeo)
+							{
+								var seg = L.geoJson(valgeo, {
+									style: function () {
+										return {weight: 0, opacity: 1, color: '#'+color}
+									}
+								});
+
+								segmentLayer.addLayer(seg);
+							});
+						});
+					});
+					$("#dvloader").hide();
+				}
+				catch (err)
+				{
+					console.log(err);
+					$("#dvloader").hide();
+				}
+			}
+
+			map.addLayer(segmentLayer);
+			this.className = 'active';
+		}
+		return false;
+	};
 
 	var nodescount = 0;
 	var nodesonlinecount = 0;
